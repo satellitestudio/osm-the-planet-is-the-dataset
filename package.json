@@ -1,0 +1,21 @@
+{
+  "name": "osm-the-planet-is-the-dataset",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server -s -p 9099 ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mapbox/tile-reduce": "^3.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-es6": "^1.10.3",
+    "eslint-plugin-import": "^2.11.0",
+    "http-server": "^0.11.1"
+  }
+}

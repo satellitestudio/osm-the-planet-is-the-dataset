@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Ski pistes</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    body { margin:0; padding:0; }
+    #map { position:absolute; top:0; bottom:0; width:100%; }
+  </style>
+</head>
+<body>
+
+<style>
+  #menu {
+    position: absolute;
+    background: #fff;
+    padding: 10px;
+    font-family: 'Open Sans', sans-serif;
+  }
+</style>
+
+<div id='map'></div>
+<div id='menu'>
+  <input id='swissski' type='radio' name='rtoggle' value='swissski' checked='checked'>
+  <label for='swissski'>swiss-ski</label>
+  <input id='hillshading' type='radio' name='rtoggle' value='hillshading'>
+  <label for='hillshading'>hillshading</label>
+  <label>morning/day/evening: </label>
+  <input id='slider' type='range' min='0' max='100' step='0' value='93' />
+</div>
+<script src="../../mapbox-token.js"></script>
+<script src="https://d3js.org/d3-color.v1.min.js"></script>
+<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+<script src="./index.js"></script>
+</body>
+</html>
