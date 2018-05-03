@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All hairdressers</title>
+  <style>
+    body {
+      height: 100%;
+    }
+    p {
+      margin: 0;
+      text-align: distribute;
+      font-family: Helvetica, sans-serif;
+      font-size: 5vw;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+<p>
+  ...
+</p>
+<script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+<script>
+  fetch('../../data/out/hairdressers_france.csv')
+    .then(r => r.text())
+    .then(r => {
+      const data = d3.csvParse(r)
+      const p = document.querySelector('p')
+      p.innerText = data.map(hairdresser => hairdresser.name).join(', ');
+    })
+</script>
+</body>
+</html>

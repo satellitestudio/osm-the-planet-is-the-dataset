@@ -1,6 +1,6 @@
 #### How to use
 
-- Install dependencies (node 8 needed):
+- Install dependencies (node v7 needed):
 ```
 npm i
 ```

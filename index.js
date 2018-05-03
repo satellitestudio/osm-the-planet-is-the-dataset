@@ -21,9 +21,7 @@ tileReduce({
     mbtiles: mbtiles,
     // raw: true // set to true will feed the map script raw MVT data instead of GeoJSON
   }],
-  mapOptions: {
-
-  }
+  mapOptions: {}
 })
 .on('reduce', function(data) {
   process.stderr.write(`${data.features.length} features`)

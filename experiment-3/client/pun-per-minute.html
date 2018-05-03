@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Puns per minute</title>
+  <style>
+    body {
+      height: 100%;
+    }
+    p {
+      position: absolute;
+      margin: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: center;
+      font-family: Helvetica, sans-serif;
+      font-size: 15vw;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <p>
+    ...
+  </p>
+  <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+  <script>
+    fetch('../../data/out/hairdressers_france.csv')
+      .then(r => r.text())
+      .then(r => {
+        const data = d3.csvParse(r)
+        const p = document.querySelector('p')
+        window.setInterval(() => {
+          const index = Math.floor(data.length * Math.random())
+          const name = data[index].name
+          p.innerText = name;
+        }, 500)
+      })
+  </script>
+</body>
+</html>
