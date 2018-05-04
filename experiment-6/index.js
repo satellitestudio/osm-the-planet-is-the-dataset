@@ -2,7 +2,6 @@
 
 const tileReduce = require('@mapbox/tile-reduce')
 const path = require('path')
-// const fs = require('fs')
 
 const mbtiles = process.argv[2] || path.join(__dirname, '../data/in/switzerland.mbtiles')
 
