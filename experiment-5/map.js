@@ -1,18 +1,60 @@
-const fs = require('fs')
-// everything here happens in a worker. Logging To your terminal won't work, send an error to the done callback
+var pip = require('@turf/boolean-point-in-polygon').default
+var coordAll = require('@turf/meta').coordAll
+
+const contains = (feature, envelope) => {
+  const samplePoint = coordAll(feature)[0]
+  return pip(samplePoint, envelope)
+}
+
+// return features like roller coasters etc that 'belong' to the theme park envelope
+const getSubfeatures = (features, envelope) => {
+  const filteredFeatures = features.filter(feature => {
+    const p = feature.properties
+    return contains(feature, envelope) &&
+      (
+        p.highway === 'pedestrian' ||
+        p.railway === 'narrow_gauge' ||
+        p.railway === 'miniature' ||
+        p.railway === 'monorail' ||
+        p.natural === 'water' ||
+        p.waterway === 'river' ||
+        p.waterway === 'canal'
+      )
+  })
+  filteredFeatures.forEach(feature => {
+    const p = feature.properties
+    feature.properties._type = 'rollercoaster'
+    if (p.natural === 'water' || p.waterway !== undefined) {
+      p._type = 'water'
+    }
+    else if (p.highway === 'pedestrian') {
+      p._type = 'path'
+    }
+  })
+  return filteredFeatures
+}
 
 module.exports = function(data, tile, writeData, done) {
-  const features = data.osm.osm.features.filter(function (feature) {
-    return feature.properties.tourism === 'theme_park'
+  const themeParksEnveloppes = data.osm.osm.features.filter(feature => {
+    return feature.properties.tourism === 'theme_park' &&     // get object tagged as theme parks
+          feature.properties.name !== undefined &&
+          ['Polygon', 'MultiPolygon'].indexOf(feature.geometry.type) > -1      // exclude non polygon geometries
   })
-  
-  // features.forEach(themePark => {
-  //   fs.writeFileSync(JSON.stringify(themePark))
-  // })
-  
-  // 1st argument is for errors!
+
+  const themeParksFragments = themeParksEnveloppes.map(themeParkEnveloppe => {
+    const id = themeParkEnveloppe.properties['@id']
+    let name = themeParkEnveloppe.properties.name
+    name = name.replace('\'', '').replace('-','')
+    themeParkEnveloppe.properties._type = 'area'
+    const features = (global.mapOptions.includeEnveloppe === true) ? [themeParkEnveloppe] : []
+    return {
+      id,
+      name,
+      features: features.concat(getSubfeatures(data.osm.osm.features, themeParkEnveloppe))
+    }
+  }).filter(themeParksFragment => themeParksFragment.features.length)
   done(null, {
-    features
+    themeParksFragments
   })
 }
   

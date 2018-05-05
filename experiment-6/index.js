@@ -20,7 +20,7 @@ tileReduce({
   mapOptions: {}
 })
   .on('reduce', function(data) {
-    process.stderr.write(`${data.features.length} features`)
+    // process.stderr.write(`${data.features.length} features`)
     geoJson.features = geoJson.features.concat(data.features)
   })
   .on('end', function() {

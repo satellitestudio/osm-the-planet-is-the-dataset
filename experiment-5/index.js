@@ -6,60 +6,68 @@ const fs = require('fs')
 const mapshaper = require('mapshaper')
 
 const mbtiles = process.argv[2] || path.join(__dirname, '../data/in/belgium.mbtiles')
+const out = process.argv[3] || path.join(__dirname, '../data/out/experiment-5')
 
 let themeParksFragments = []
-const themeParksGeoJSON = {}
-
-const geoJson = {
-  type: 'FeatureCollection',
-  features: []
-}
+const themeParksGeoJSONs = {}
 
 tileReduce({
   map: path.join(__dirname, './map.js'),
   sources: [{
     name: 'osm',
-    mbtiles,
-    // raw: true // set to true will feed the map script raw MVT data instead of GeoJSON
+    mbtiles
   }],
-  mapOptions: {}
+  mapOptions: {
+    includeEnveloppe: false
+  }
 })
   .on('reduce', function(data) {
-    process.stderr.write(`${data.features.length} features`)
-    themeParksFragments = themeParksFragments.concat(data.features)
-    // data.features.forEach(themePark => {
-    //   const file = path.join(__dirname, '../data/out/svg', 'test.json')
-    //   console.log(file)
-    //   mapshaper.runCommands()
-    //   //fs.writeFileSync(file, JSON.stringify(themePark))
-    // })
+    process.stderr.write(`${data.themeParksFragments.length} features`)
+    themeParksFragments = themeParksFragments.concat(data.themeParksFragments)
   })
   .on('end', function() {
-    //process.stderr.write(`reduce complete, ${geoJson.features.length} features`)
-    //console.log (JSON.stringify(geoJson))
-    //console.log(themeParksFragments)
     themeParksFragments.forEach(themeParkFragment => {
-      const id = themeParkFragment.properties['@id']
-      if (themeParksGeoJSON[id] !== undefined) {
-        themeParksGeoJSON[id].features.push(themeParkFragment)
+      const id = themeParkFragment.id
+      if (themeParksGeoJSONs[id] !== undefined) {
+        themeParksGeoJSONs[id].features = 
+        themeParksGeoJSONs[id].features.concat(themeParkFragment.features)
       } else {
-        themeParksGeoJSON[id] = {
+        themeParksGeoJSONs[id] = {
+          name: themeParkFragment.name,
           type: 'FeatureCollection',
-          features: [themeParkFragment]
+          features: themeParkFragment.features
         }
       }
     })
 
-    console.log(themeParksGeoJSON)
-
-    Object.keys(themeParksGeoJSON).forEach(id => {
-      console.log(id)
-      const geoJSON = themeParksGeoJSON[id]
-      console.log(geoJSON)
-      const name = geoJSON.features[0].properties.name || id
+    Object.keys(themeParksGeoJSONs).forEach(id => {
+      const geoJSON = themeParksGeoJSONs[id]
+      let name = geoJSON.name
       console.log(name)
-      const file = path.join(__dirname, '../data/out/svg', `${name}.json`)
-      fs.writeFileSync(file, JSON.stringify(geoJSON))
+      const geoJSONFile = path.join(out, 'geojson', `${name}.json`)
+      const svgFile = path.join(out, 'svg', `${name}.svg`)
+      fs.writeFile(geoJSONFile, JSON.stringify(geoJSON), err => { 
+        if (err) {
+          console.log(err)
+          return
+        }      
+        //console.log(geoJSONFile)
+        // 'where=tourism&&tourism=="theme_park"',
+        mapshaper.runCommands([
+          geoJSONFile,
+          '-svg-style',
+          // 'where=_type=="area"',
+          // 'fill=red',
+          'where=_type=="water"',
+          'fill=blue',
+          'where=_type=="path"',
+          'stroke=green',
+          '-o',
+          'format=svg',
+          `${svgFile}`
+        ], err => {
+          if (err) process.stderr.write(err)
+        })
+      })
     })
-
   })
