@@ -1,5 +1,6 @@
 var pip = require('@turf/boolean-point-in-polygon').default
 var coordAll = require('@turf/meta').coordAll
+var getArea = require('@turf/area').default
 
 const contains = (feature, envelope) => {
   const samplePoint = coordAll(feature)[0]
@@ -13,9 +14,13 @@ const getSubfeatures = (features, envelope) => {
     return contains(feature, envelope) &&
       (
         p.highway === 'pedestrian' ||
+        p.highway === 'footway' ||
         p.railway === 'narrow_gauge' ||
         p.railway === 'miniature' ||
         p.railway === 'monorail' ||
+        p.railway === 'tram' ||
+        p.railway === 'rail' ||
+        p.highway === 'raceway' ||
         p.natural === 'water' ||
         p.waterway === 'river' ||
         p.waterway === 'canal'
@@ -27,7 +32,7 @@ const getSubfeatures = (features, envelope) => {
     if (p.natural === 'water' || p.waterway !== undefined) {
       p._type = 'water'
     }
-    else if (p.highway === 'pedestrian') {
+    else if (p.highway === 'pedestrian'  || p.highway === 'footway') {
       p._type = 'path'
     }
   })
@@ -47,12 +52,14 @@ module.exports = function(data, tile, writeData, done) {
     name = name.replace('\'', '').replace('-','')
     themeParkEnveloppe.properties._type = 'area'
     const features = (global.mapOptions.includeEnveloppe === true) ? [themeParkEnveloppe] : []
+    const area = getArea(themeParkEnveloppe)
     return {
+      area,
       id,
       name,
       features: features.concat(getSubfeatures(data.osm.osm.features, themeParkEnveloppe))
     }
-  }).filter(themeParksFragment => themeParksFragment.features.length)
+  }).filter(themeParksFragment => themeParksFragment.features.length && themeParksFragment.area > 250000)
   done(null, {
     themeParksFragments
   })

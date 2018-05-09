@@ -53,7 +53,7 @@ map.on('data', function () {
 
   map.addSource('pistes-source', {
     'type': 'vector',
-    'url': 'mapbox://nerik.bjicfoa5'
+    'url': 'mapbox://nerik.2feqov0i'
   })
 
   const colorStops = [
@@ -97,10 +97,10 @@ map.on('data', function () {
 
   // ski tracks
   map.addLayer({
-    "id": "switzerland-pistes-4j09am",
+    "id": "pistes-world-d6ytad",
     "type": "line",
     "source": "pistes-source",
-    "source-layer": "switzerland-pistes-4j09am",
+    "source-layer": "pistesworld",
     "layout": {
       "visibility": "visible"
     },
@@ -129,10 +129,10 @@ map.on('data', function () {
 
   // ski tracks labels
   map.addLayer({
-    "id": "switzerland-pistes-4j09am-labels",
+    "id": "pistes-world-d6ytad-labels",
     "type": "symbol",
     "source": "pistes-source",
-    "source-layer": "switzerland-pistes-4j09am",
+    "source-layer": "pistesworld",
     "layout": {
       "visibility": "visible",
       "text-field": "{name}",

@@ -1,8 +1,8 @@
 // everything here happens in a separate thread. Logging to your terminal won't work,
 // send an error/debug via the done callback
-
+// map.js
 module.exports = function(data, tile, writeData, done) {
-  const pistes = data.osm.osm.features.filter(function (feature) {
+  const pistes = data.osm.osm.features.filter(feature => {
     // grab any piste that has difficulty information
     return feature.properties['piste:difficulty'] !== undefined
       // we're not interested in points and polygons
@@ -54,3 +54,4 @@ module.exports = function(data, tile, writeData, done) {
     features: pistes
   })
 }
+
