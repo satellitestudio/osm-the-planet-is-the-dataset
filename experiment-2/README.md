@@ -25,6 +25,9 @@ out center;
 out skel qt;
 ```
 
+Calls to the API:
+
+
 
 Check out the whole project on Github:
 https://github.com/nerik/osm-haiku

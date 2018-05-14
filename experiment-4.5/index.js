@@ -25,16 +25,16 @@ tileReduce({
     themeParksFragments = themeParksFragments.concat(data.themeParksFragments)
   })
   .on('end', function() {
-    console.log(themeParksFragments)
+    //console.log(themeParksFragments)
     themeParksFragments.forEach(themeParkFragment => {
-      console.log(themeParkFragment)
+      //console.log(themeParkFragment)
       const id = themeParkFragment.id
       if (themeParksGeoJSONs[id] !== undefined) {
         themeParksGeoJSONs[id].features = 
           themeParksGeoJSONs[id].features.concat(themeParkFragment.features)
         themeParksGeoJSONs[id].area += themeParksGeoJSONs[id].area 
       } else {
-        themeParksGeoJSONs[id] = {
+        themeParksGeoJSONs[id] = {  
           name: themeParkFragment.name,
           area: themeParkFragment.area,
           type: 'FeatureCollection',
@@ -48,13 +48,11 @@ tileReduce({
       let name = geoJSON.name
       console.log(name, geoJSON.area)
       const geoJSONFile = path.join(out, 'geojson', `${name}.json`)
-      //const svgFile = path.join(out, 'svg', `${name}.svg`)
       fs.writeFile(geoJSONFile, JSON.stringify(geoJSON), err => { 
         if (err !== null) {
           process.stderr.write(err)
           return
         }      
-        
       })
     })
   })

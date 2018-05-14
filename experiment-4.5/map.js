@@ -13,27 +13,20 @@ const getSubfeatures = (features, envelope) => {
     const p = feature.properties
     return contains(feature, envelope) &&
       (
-        p.highway === 'pedestrian' ||
-        p.highway === 'footway' ||
         p.railway === 'narrow_gauge' ||
         p.railway === 'miniature' ||
         p.railway === 'monorail' ||
         p.railway === 'tram' ||
         p.railway === 'rail' ||
         p.highway === 'raceway' ||
-        p.natural === 'water' ||
-        p.waterway === 'river' ||
         p.waterway === 'canal'
       )
   })
   filteredFeatures.forEach(feature => {
     const p = feature.properties
     feature.properties._type = 'rollercoaster'
-    if (p.natural === 'water' || p.waterway !== undefined) {
+    if (p.waterway !== undefined) {
       p._type = 'water'
-    }
-    else if (p.highway === 'pedestrian'  || p.highway === 'footway') {
-      p._type = 'path'
     }
   })
   return filteredFeatures
